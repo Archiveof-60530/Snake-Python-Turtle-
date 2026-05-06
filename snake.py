@@ -7,13 +7,14 @@ def generate_color():
 
 
 class Head(Turtle):
-  def __init__(self, screen, body):
+  def __init__(self, screen):
     super().__init__()
     self.ht()
     self.speed(0)
     self.penup()
     self.shape("square")
     self.st()
+    self.alive = True
     screen.onkeypress(self.left, "Left")
     screen.onkeypress(self.right, "Right")
     screen.onkeypress(self.up, "Up")
@@ -41,7 +42,7 @@ class Head(Turtle):
 
 
   def move(self):
-    self.forward(5)
+    self.forward(20)
     if self.xcor() > 230 or self.xcor() < -230:
         self.die()
     if self.ycor() > 230 or self.ycor() < -230:
@@ -58,10 +59,13 @@ class Segment(Turtle):
     self.penup()
     self.speed(0)
     self.shape("square")
-    self.showturtle()
+    self.goto(other.xcor(),other.ycor())
+    self.st()
+
   def move(self, other):
-    for i in range(len(body)-1, 0, -1):
-      body[i].move(body[i-1])
+    self.goto(other.xcor(),other.ycor())
+    
+
 
 
 class Apple(Turtle):
@@ -78,28 +82,38 @@ class Apple(Turtle):
   def relocate(self):
     self.goto(random.randint(-200,200), random.randint(-200,200))
 
+
+
+def update ():
+  if player.alive:
+      player.move()
+      for i in range(len(body)-1,0,-1): 
+        body[i].move(body[i-1])
+      if player.distance(apl)<20:
+        apl.relocate()
+        body.append(Segment(body[-1]))
+    
+
+      for i in range(len(body)):
+          if player.distance(body[i]) > 20:
+            player.color("red")
+  screen.ontimer(update,10)
+
+
+
+
 screen = Screen()
 screen.bgcolor("lightblue")
 screen.setup(520,520)
 # Key Binding. Connects key presses and mouse clicks with function calls
 screen.listen()
-
-
-body = []
-
-player = Head(screen,body)
-apl = Apple()
-
-while True:
-  player.move()
-  if player.distance(apl) < 20:
-    apl.relocate()
-    body.append(Segment(len(body)))
-    .move(body)     
+screen.onkey(update,"space")
 
 
 
 
-
+player = Head(screen)
+apl = Apple() 
+body = [player]
 
 screen.exitonclick()
