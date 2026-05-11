@@ -94,9 +94,9 @@ def update ():
         body.append(Segment(body[-1]))
     
 
-      for i in range(len(body)):
+      for i in range(len(body)):  
           if player.distance(body[i]) > 20:
-            player.color("red")
+            player.ht()
   screen.ontimer(update,10)
 
 
